@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>独立全包软件项目 全能能力模型</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: rgba(15, 15, 25, 0.85);
+            --text-primary: #f0f0f5;
+            --text-secondary: #8888aa;
+            --accent-1: #6366f1;
+            --accent-2: #8b5cf6;
+            --accent-3: #ec4899;
+            --accent-4: #f59e0b;
+            --accent-5: #10b981;
+            --accent-6: #06b6d4;
+            --accent-7: #ef4444;
+            --accent-8: #14b8a6;
+            --glow: rgba(99, 102, 241, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: var(--bg-dark);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: 0;
+        }
+
+        .bg-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(150px);
+            opacity: 0.15;
+            z-index: 0;
+        }
+
+        .bg-glow-1 {
+            top: -200px;
+            left: -100px;
+            background: var(--accent-1);
+            animation: float1 20s ease-in-out infinite;
+        }
+
+        .bg-glow-2 {
+            bottom: -200px;
+            right: -100px;
+            background: var(--accent-3);
+            animation: float2 25s ease-in-out infinite;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(100px, 50px); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-80px, -60px); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 80px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+        }
+
+        .header h1 {
+            font-size: 3.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .capability-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .capability-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fadeInUp 0.8s ease-out backwards;
+        }
+
+        .capability-card:nth-child(1) { animation-delay: 0.1s; }
+        .capability-card:nth-child(2) { animation-delay: 0.15s; }
+        .capability-card:nth-child(3) { animation-delay: 0.2s; }
+        .capability-card:nth-child(4) { animation-delay: 0.25s; }
+        .capability-card:nth-child(5) { animation-delay: 0.3s; }
+        .capability-card:nth-child(6) { animation-delay: 0.35s; }
+        .capability-card:nth-child(7) { animation-delay: 0.4s; }
+        .capability-card:nth-child(8) { animation-delay: 0.45s; }
+
+        .capability-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .capability-card:nth-child(1)::before { background: linear-gradient(90deg, var(--accent-1), var(--accent-2)); }
+        .capability-card:nth-child(2)::before { background: linear-gradient(90deg, var(--accent-3), #f472b6); }
+        .capability-card:nth-child(3)::before { background: linear-gradient(90deg, var(--accent-4), #fbbf24); }
+        .capability-card:nth-child(4)::before { background: linear-gradient(90deg, var(--accent-5), #34d399); }
+        .capability-card:nth-child(5)::before { background: linear-gradient(90deg, var(--accent-6), #22d3ee); }
+        .capability-card:nth-child(6)::before { background: linear-gradient(90deg, var(--accent-7), #f87171); }
+        .capability-card:nth-child(7)::before { background: linear-gradient(90deg, #a855f7, #d946ef); }
+        .capability-card:nth-child(8)::before { background: linear-gradient(90deg, var(--accent-8), #2dd4bf); }
+
+        .capability-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .capability-card:nth-child(1):hover { box-shadow: 0 20px 60px rgba(99, 102, 241, 0.2); }
+        .capability-card:nth-child(2):hover { box-shadow: 0 20px 60px rgba(236, 72, 153, 0.2); }
+        .capability-card:nth-child(3):hover { box-shadow: 0 20px 60px rgba(245, 158, 11, 0.2); }
+        .capability-card:nth-child(4):hover { box-shadow: 0 20px 60px rgba(16, 185, 129, 0.2); }
+        .capability-card:nth-child(5):hover { box-shadow: 0 20px 60px rgba(6, 182, 212, 0.2); }
+        .capability-card:nth-child(6):hover { box-shadow: 0 20px 60px rgba(239, 68, 68, 0.2); }
+        .capability-card:nth-child(7):hover { box-shadow: 0 20px 60px rgba(168, 85, 247, 0.2); }
+        .capability-card:nth-child(8):hover { box-shadow: 0 20px 60px rgba(20, 184, 166, 0.2); }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            flex-shrink: 0;
+        }
+
+        .capability-card:nth-child(1) .card-icon { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2)); }
+        .capability-card:nth-child(2) .card-icon { background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(244, 114, 182, 0.2)); }
+        .capability-card:nth-child(3) .card-icon { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(251, 191, 36, 0.2)); }
+        .capability-card:nth-child(4) .card-icon { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(52, 211, 153, 0.2)); }
+        .capability-card:nth-child(5) .card-icon { background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(34, 211, 238, 0.2)); }
+        .capability-card:nth-child(6) .card-icon { background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(248, 113, 113, 0.2)); }
+        .capability-card:nth-child(7) .card-icon { background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(217, 70, 239, 0.2)); }
+        .capability-card:nth-child(8) .card-icon { background: linear-gradient(135deg, rgba(20, 184, 166, 0.2), rgba(45, 212, 191, 0.2)); }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .card-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .skill-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.3s ease;
+        }
+
+        .skill-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .skill-bullet {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+
+        .capability-card:nth-child(1) .skill-bullet { background: var(--accent-1); box-shadow: 0 0 12px var(--accent-1); }
+        .capability-card:nth-child(2) .skill-bullet { background: var(--accent-3); box-shadow: 0 0 12px var(--accent-3); }
+        .capability-card:nth-child(3) .skill-bullet { background: var(--accent-4); box-shadow: 0 0 12px var(--accent-4); }
+        .capability-card:nth-child(4) .skill-bullet { background: var(--accent-5); box-shadow: 0 0 12px var(--accent-5); }
+        .capability-card:nth-child(5) .skill-bullet { background: var(--accent-6); box-shadow: 0 0 12px var(--accent-6); }
+        .capability-card:nth-child(6) .skill-bullet { background: var(--accent-7); box-shadow: 0 0 12px var(--accent-7); }
+        .capability-card:nth-child(7) .skill-bullet { background: #a855f7; box-shadow: 0 0 12px #a855f7; }
+        .capability-card:nth-child(8) .skill-bullet { background: var(--accent-8); box-shadow: 0 0 12px var(--accent-8); }
+
+        .skill-text {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .skill-text strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .full-width-section {
+            grid-column: 1 / -1;
+        }
+
+        .center-hub {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0;
+            animation: fadeIn 1s ease-out 0.8s backwards;
+        }
+
+        .hub-container {
+            position: relative;
+            width: 420px;
+            height: 420px;
+        }
+
+        .hub-core {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 60px rgba(99, 102, 241, 0.5);
+            z-index: 2;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 60px rgba(99, 102, 241, 0.5); }
+            50% { box-shadow: 0 0 80px rgba(99, 102, 241, 0.7); }
+        }
+
+        .hub-core-icon {
+            font-size: 2rem;
+            margin-bottom: 4px;
+        }
+
+        .hub-core-text {
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .hub-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 2px dashed rgba(99, 102, 241, 0.2);
+            border-radius: 50%;
+            animation: rotate 60s linear infinite;
+        }
+
+        .hub-ring:nth-child(1) { width: 320px; height: 320px; animation-duration: 40s; }
+        .hub-ring:nth-child(2) { width: 360px; height: 360px; animation-direction: reverse; animation-duration: 50s; }
+        .hub-ring:nth-child(3) { width: 400px; height: 400px; animation-duration: 70s; }
+
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .hub-nodes {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 320px;
+            height: 320px;
+        }
+
+        .hub-node {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            background: var(--bg-card);
+            border: 2px solid;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .hub-node:hover {
+            transform: translate(-50%, -50%) scale(1.2) !important;
+            z-index: 10;
+        }
+
+        /* Tooltip */
+        .hub-node::before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 15, 25, 0.95);
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            pointer-events: none;
+        }
+
+        .hub-node:hover::before {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* 8 nodes evenly distributed on circle using polar coordinates */
+
+        /* Workflow Section */
+        .workflow-section {
+            margin: 80px 0;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .workflow-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .workflow-title h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .workflow-title p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .workflow-container {
+            position: relative;
+            padding: 40px 0;
+            overflow-x: auto;
+        }
+
+        .workflow-track {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-width: max-content;
+            padding: 20px 40px;
+            gap: 0;
+        }
+
+        .workflow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            background: var(--bg-card);
+            border: 2px solid;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .step-icon::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, var(--step-color), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .workflow-step:hover .step-icon {
+            transform: translateY(-8px) scale(1.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px var(--step-color);
+        }
+
+        .workflow-step:hover .step-icon::before {
+            opacity: 0.3;
+        }
+
+        .step-name {
+            margin-top: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .workflow-step:nth-child(1) .step-icon { border-color: #f43f5e; --step-color: #f43f5e; }
+        .workflow-step:nth-child(2) .step-icon { border-color: #f97316; --step-color: #f97316; }
+        .workflow-step:nth-child(3) .step-icon { border-color: #eab308; --step-color: #eab308; }
+        .workflow-step:nth-child(4) .step-icon { border-color: #22c55e; --step-color: #22c55e; }
+        .workflow-step:nth-child(5) .step-icon { border-color: #06b6d4; --step-color: #06b6d4; }
+        .workflow-step:nth-child(6) .step-icon { border-color: #8b5cf6; --step-color: #8b5cf6; }
+        .workflow-step:nth-child(7) .step-icon { border-color: #ec4899; --step-color: #ec4899; }
+        .workflow-step:nth-child(8) .step-icon { border-color: #6366f1; --step-color: #6366f1; }
+        .workflow-step:nth-child(9) .step-icon { border-color: #14b8a6; --step-color: #14b8a6; }
+
+        .step-arrow {
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+            position: relative;
+            margin: 0 -4px;
+            z-index: 1;
+        }
+
+        .step-arrow::after {
+            content: '›';
+            position: absolute;
+            right: -4px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Radar Chart Section */
+        .radar-section {
+            margin: 80px 0;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .radar-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+
+        .radar-form {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 32px;
+        }
+
+        .name-input-group {
+            margin-bottom: 28px;
+        }
+
+        .name-input-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .name-input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .name-input:focus {
+            outline: none;
+            border-color: var(--accent-1);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+        }
+
+        .name-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .score-group {
+            margin-bottom: 16px;
+        }
+
+        .score-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .score-label-text {
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .score-label-icon {
+            font-size: 1.1rem;
+        }
+
+        .score-value {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--accent-1);
+            background: rgba(99, 102, 241, 0.15);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .score-slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .score-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+            transition: transform 0.2s ease;
+        }
+
+        .score-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .score-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 16px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .radar-chart-wrapper {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 550px;
+        }
+
+        .chart-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .chart-person-name {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 480px;
+            margin-top: 20px;
+        }
+
+        .chart-placeholder {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 80px 40px;
+        }
+
+        .chart-placeholder-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .chart-placeholder-text {
+            font-size: 1rem;
+        }
+
+        .chart-total {
+            margin-top: 24px;
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 8px;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .total-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .total-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .total-max {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .summary-section {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 32px;
+            padding: 48px;
+            margin-top: 60px;
+            text-align: center;
+            animation: fadeInUp 1s ease-out 1s backwards;
+        }
+
+        .summary-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .summary-text {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 2;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .summary-highlight {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 1200px) {
+            .capability-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .radar-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .radar-chart-wrapper {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 20px;
+            }
+
+            .header h1 {
+                font-size: 2.2rem;
+            }
+
+            .capability-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hub-container {
+                transform: scale(0.8);
+            }
+
+            .summary-section {
+                padding: 32px 24px;
+            }
+
+            .workflow-section {
+                margin: 40px 0;
+            }
+
+            .workflow-container {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+
+    <div class="container">
+        <header class="header">
+            <span class="header-badge">AI时代全栈能力矩阵</span>
+            <h1>全能开发者能力模型</h1>
+            <p>独立完成软件项目的完整能力体系，涵盖技术、产品、管理、测试、沟通、架构、素养与AI应用八大维度，拥抱AI提效</p>
+        </header>
+
+        <!-- Center Hub -->
+        <div class="center-hub">
+            <div class="hub-container">
+                <div class="hub-ring"></div>
+                <div class="hub-ring"></div>
+                <div class="hub-ring"></div>
+                <div class="hub-core">
+                    <span class="hub-core-icon">🚀</span>
+                    <span class="hub-core-text">全能<br>开发者</span>
+                </div>
+                <div class="hub-nodes">
+                    <div class="hub-node" data-tooltip="技术硬能力">⚡</div>
+                    <div class="hub-node" data-tooltip="产品&需求">🎨</div>
+                    <div class="hub-node" data-tooltip="项目管理">📊</div>
+                    <div class="hub-node" data-tooltip="测试&质量">🔧</div>
+                    <div class="hub-node" data-tooltip="沟通&商务">💬</div>
+                    <div class="hub-node" data-tooltip="架构&设计">🏗️</div>
+                    <div class="hub-node" data-tooltip="心态&素养">💪</div>
+                    <div class="hub-node" data-tooltip="AI应用能力">🤖</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Capability Cards Grid -->
+        <div class="capability-grid">
+            <!-- Card 1: 全栈技术硬能力 -->
+            <div class="capability-card">
+                <div class="card-header">
+                    <div class="card-icon">⚡</div>
+                    <div>
+                        <h2 class="card-title">一、全栈技术硬能力</h2>
+                        <p class="card-subtitle">Technical Hard Skills</p>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>前后端通吃：</strong>前端页面布局、组件开发、UI适配、交互逻辑；后端接口开发、业务逻辑、权限校验、异常处理</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>数据库能力：</strong>表设计、索引优化、联表查询、事务处理、分表基础、数据迁移</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>服务与部署：</strong>服务器操作、环境搭建、SSL配置、容器部署、一键上线</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>运维基础：</strong>日志排查、接口调试、压力自测、漏洞简单自查、版本回滚</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>AI辅助编码：</strong>Agent+研发review、AI编码助手使用、提升开发效率</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: 产品&需求能力 -->
+            <div class="capability-card">
+                <div class="card-header">
+                    <div class="card-icon">🎨</div>
+                    <div>
+                        <h2 class="card-title">二、产品&需求能力</h2>
+                        <p class="card-subtitle">Product & Requirements</p>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text">独立梳理需求、画原型、定功能流程</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text">拆解模块、排优先级、砍掉无效需求</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>AI需求处理：</strong>利用Agent编制《软件需求规格书》，减少传递差异</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>直接接收需求：</strong>从需求源头开始，减少中间环节</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: 项目管理能力 -->
+            <div class="capability-card">
+                <div class="card-header">
+                    <div class="card-icon">📊</div>
+                    <div>
+                        <h2 class="card-title">三、项目管理能力</h2>
+                        <p class="card-subtitle">Project Management</p>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text">自我排期、拆分任务、把控整体工期</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>风险预判：</strong>技术卡点、需求变更、工期延误提前预案</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>角色协同：</strong>适应实施/项目经理/研发三合一协作模式</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>成本控制：</strong>AI提效减少冗余，实现整体增效</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: 测试&质量能力 -->
+            <div class="capability-card">
+                <div class="card-header">
+                    <div class="card-icon">🔧</div>
+                    <div>
+                        <h2 class="card-title">四、测试&质量能力</h2>
+                        <p class="card-subtitle">Testing & Quality</p>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text">单元自测、流程全链路测试</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text">边界场景、异常场景、兼容测试</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>AI辅助测试：</strong>AI生成测试用例、系统测试AI辅助</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>性能优化：</strong>加载速度、请求效率</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5: 沟通&商务软实力 -->
+            <div class="capability-card">
+                <div class="card-header">
+                    <div class="card-icon">💬</div>
+                    <div>
+                        <h2 class="card-title">五、沟通&商务软实力</h2>
+                        <p class="card-subtitle">Communication & Business</p>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>直接客户沟通：</strong>直接对接用户进行需求调研和确认</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text">汇报进度、同步问题、合理延期沟通</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text">简单方案输出、报价思路、工期预估</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text">应对需求反复，守住边界不无限加功能</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 6: 架构&设计思维 -->
+            <div class="capability-card">
+                <div class="card-header">
+                    <div class="card-icon">🏗️</div>
+                    <div>
+                        <h2 class="card-title">六、架构&设计思维</h2>
+                        <p class="card-subtitle">Architecture & Design</p>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>轻量化架构：</strong>小型项目简洁架构设计</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>代码规范：</strong>模块化、可维护、方便后续迭代</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>AI友好架构：</strong>设计便于AI辅助测试和编码的架构</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text">懂简单设计模式，减少烂代码</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 7: 心态与综合素养 -->
+            <div class="capability-card">
+                <div class="card-header">
+                    <div class="card-icon">💪</div>
+                    <div>
+                        <h2 class="card-title">七、心态与综合素养</h2>
+                        <p class="card-subtitle">Mindset & Quality</p>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>极强自律：</strong>没人监督也能保质保量完工</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>持续学习：</strong>拥抱AI变化，快速适应新工具</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>抗压能力：</strong>赶工期、改需求、突发问题稳得住</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>闭环思维：</strong>从0需求→开发→测试→上线→售后全包</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 8: AI应用能力 -->
+            <div class="capability-card">
+                <div class="card-header">
+                    <div class="card-icon">🤖</div>
+                    <div>
+                        <h2 class="card-title">八、AI应用能力</h2>
+                        <p class="card-subtitle">AI Application Skills</p>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>AI辅助编码：</strong>Agent+研发review，提升编码效率</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>AI需求处理：</strong>利用Agent编制需求文档、需求分拣策划</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>AI辅助测试：</strong>AI生成测试用例、系统测试自动化</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>AI文档生成：</strong>自动生成接口文档、用户手册</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-bullet"></span>
+                        <p class="skill-text"><strong>AI提效工具链：</strong>构建标准化的AI工作方式</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Workflow Section -->
+        <section class="workflow-section">
+            <div class="workflow-title">
+                <h2>项目全流程角色图谱</h2>
+                <p>传统团队 vs AI驱动开发者：一人多角色，效率倍增</p>
+            </div>
+            
+            <div class="workflow-container">
+                <div class="workflow-track">
+                    <div class="workflow-step">
+                        <div class="step-icon">🎯</div>
+                        <span class="step-name">销售</span>
+                    </div>
+                    <div class="step-arrow"></div>
+                    <div class="workflow-step">
+                        <div class="step-icon">📋</div>
+                        <span class="step-name">售前</span>
+                    </div>
+                    <div class="step-arrow"></div>
+                    <div class="workflow-step">
+                        <div class="step-icon">📊</div>
+                        <span class="step-name">项目经理</span>
+                    </div>
+                    <div class="step-arrow"></div>
+                    <div class="workflow-step">
+                        <div class="step-icon">💡</div>
+                        <span class="step-name">需求人员</span>
+                    </div>
+                    <div class="step-arrow"></div>
+                    <div class="workflow-step">
+                        <div class="step-icon">🎨</div>
+                        <span class="step-name">UI</span>
+                    </div>
+                    <div class="step-arrow"></div>
+                    <div class="workflow-step">
+                        <div class="step-icon">⚡</div>
+                        <span class="step-name">开发</span>
+                    </div>
+                    <div class="step-arrow"></div>
+                    <div class="workflow-step">
+                        <div class="step-icon">🔧</div>
+                        <span class="step-name">测试</span>
+                    </div>
+                    <div class="step-arrow"></div>
+                    <div class="workflow-step">
+                        <div class="step-icon">🚀</div>
+                        <span class="step-name">实施</span>
+                    </div>
+                    <div class="step-arrow"></div>
+                    <div class="workflow-step">
+                        <div class="step-icon">☁️</div>
+                        <span class="step-name">部署</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Workflow Section -->
+        <section class="workflow-section">
+            <div class="workflow-title">
+                <h2>AI 全链路辅助</h2>
+                <p>借助 AI 工具，从需求到交付全程加速</p>
+            </div>
+            
+            <div class="workflow-container">
+                <div class="workflow-track">
+                    <div class="workflow-step">
+                        <div class="step-icon">📝</div>
+                        <span class="step-name">需求分析</span>
+                    </div>
+                    <div class="step-arrow"></div>
+                    <div class="workflow-step">
+                        <div class="step-icon">🎯</div>
+                        <span class="step-name">方案设计</span>
+                    </div>
+                    <div class="step-arrow"></div>
+                    <div class="workflow-step">
+                        <div class="step-icon">✨</div>
+                        <span class="step-name">原型生成</span>
+                    </div>
+                    <div class="step-arrow"></div>
+                    <div class="workflow-step">
+                        <div class="step-icon">💻</div>
+                        <span class="step-name">代码开发</span>
+                    </div>
+                    <div class="step-arrow"></div>
+                    <div class="workflow-step">
+                        <div class="step-icon">🔍</div>
+                        <span class="step-name">测试调试</span>
+                    </div>
+                    <div class="step-arrow"></div>
+                    <div class="workflow-step">
+                        <div class="step-icon">📖</div>
+                        <span class="step-name">文档撰写</span>
+                    </div>
+                    <div class="step-arrow"></div>
+                    <div class="workflow-step">
+                        <div class="step-icon">🚀</div>
+                        <span class="step-name">部署上线</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Radar Chart Section -->
+        <section class="radar-section">
+            <div class="radar-container">
+                <!-- Form -->
+                <div class="radar-form">
+                    <h2 class="form-title">能力评估打分</h2>
+                    <p class="form-subtitle">为每位成员评估八大能力维度（1-10分）</p>
+                    
+                    <div class="name-input-group">
+                        <label for="personName">姓名</label>
+                        <input type="text" id="personName" class="name-input" placeholder="输入成员姓名...">
+                    </div>
+
+                    <div class="score-group">
+                        <div class="score-label">
+                            <span class="score-label-text"><span class="score-label-icon">⚡</span> 技术硬能力</span>
+                            <span class="score-value" id="score1Value">5</span>
+                        </div>
+                        <input type="range" class="score-slider" id="score1" min="1" max="10" value="5">
+                    </div>
+
+                    <div class="score-group">
+                        <div class="score-label">
+                            <span class="score-label-text"><span class="score-label-icon">🎨</span> 产品&需求</span>
+                            <span class="score-value" id="score2Value">5</span>
+                        </div>
+                        <input type="range" class="score-slider" id="score2" min="1" max="10" value="5">
+                    </div>
+
+                    <div class="score-group">
+                        <div class="score-label">
+                            <span class="score-label-text"><span class="score-label-icon">📊</span> 项目管理</span>
+                            <span class="score-value" id="score3Value">5</span>
+                        </div>
+                        <input type="range" class="score-slider" id="score3" min="1" max="10" value="5">
+                    </div>
+
+                    <div class="score-group">
+                        <div class="score-label">
+                            <span class="score-label-text"><span class="score-label-icon">🔧</span> 测试&质量</span>
+                            <span class="score-value" id="score4Value">5</span>
+                        </div>
+                        <input type="range" class="score-slider" id="score4" min="1" max="10" value="5">
+                    </div>
+
+                    <div class="score-group">
+                        <div class="score-label">
+                            <span class="score-label-text"><span class="score-label-icon">💬</span> 沟通&商务</span>
+                            <span class="score-value" id="score5Value">5</span>
+                        </div>
+                        <input type="range" class="score-slider" id="score5" min="1" max="10" value="5">
+                    </div>
+
+                    <div class="score-group">
+                        <div class="score-label">
+                            <span class="score-label-text"><span class="score-label-icon">🏗️</span> 架构&设计</span>
+                            <span class="score-value" id="score6Value">5</span>
+                        </div>
+                        <input type="range" class="score-slider" id="score6" min="1" max="10" value="5">
+                    </div>
+
+                    <div class="score-group">
+                        <div class="score-label">
+                            <span class="score-label-text"><span class="score-label-icon">💪</span> 心态&素养</span>
+                            <span class="score-value" id="score7Value">5</span>
+                        </div>
+                        <input type="range" class="score-slider" id="score7" min="1" max="10" value="5">
+                    </div>
+
+                    <div class="score-group">
+                        <div class="score-label">
+                            <span class="score-label-text"><span class="score-label-icon">🤖</span> AI应用能力</span>
+                            <span class="score-value" id="score8Value">5</span>
+                        </div>
+                        <input type="range" class="score-slider" id="score8" min="1" max="10" value="5">
+                    </div>
+
+                    <button class="submit-btn" onclick="generateRadar()">生成雷达图</button>
+                </div>
+
+                <!-- Chart -->
+                <div class="radar-chart-wrapper">
+                    <h2 class="chart-title">能力雷达图</h2>
+                    <p class="chart-person-name" id="chartNameDisplay">—</p>
+                    <div class="chart-container">
+                        <div class="chart-placeholder" id="chartPlaceholder">
+                            <div class="chart-placeholder-icon">📊</div>
+                            <p class="chart-placeholder-text">输入姓名并设置分数后<br>点击「生成雷达图」</p>
+                        </div>
+                        <canvas id="radarChart" style="display: none;"></canvas>
+                    </div>
+                    <div class="chart-total" id="chartTotal" style="display: none;">
+                        <span class="total-label">总分</span>
+                        <span class="total-value" id="totalValue">0</span>
+                        <span class="total-max">/ 80</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="summary-section">
+            <h2 class="summary-title">成为真正的「全栈全能+AI」</h2>
+            <p class="summary-text">
+                真正的<span class="summary-highlight">独立全包</span>不只是写代码，而是借助<span class="summary-highlight">AI 工具</span>实现从需求到上线的完整闭环。
+                <span class="summary-highlight">八大能力维度</span>相互支撑：技术是基础，产品思维是方向，管理是保障，测试是质量门神，沟通是桥梁，架构是骨架，素养是内功，AI应用是新时代倍增器。
+            </p>
+        </section>
+
+        <footer class="footer">
+            <p>全能开发者能力模型 · 独立全包软件项目 · AI时代</p>
+        </footer>
+    </div>
+
+    <script>
+        // Position hub nodes in a circle
+        (function() {
+            const nodes = document.querySelectorAll('.hub-node');
+            const container = document.querySelector('.hub-nodes');
+            const centerX = container.offsetWidth / 2;
+            const centerY = container.offsetHeight / 2;
+            const radius = 140;
+
+            nodes.forEach((node, i) => {
+                const angle = (i * 45 - 90) * (Math.PI / 180);
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+
+                node.style.position = 'absolute';
+                node.style.left = x + 'px';
+                node.style.top = y + 'px';
+                node.style.transform = 'translate(-50%, -50%)';
+            });
+        })();
+
+        // Update score display
+        for (let i = 1; i <= 8; i++) {
+            const slider = document.getElementById(`score${i}`);
+            const display = document.getElementById(`score${i}Value`);
+            slider.addEventListener('input', function() {
+                display.textContent = this.value;
+            });
+        }
+
+        // Radar Chart
+        let radarChart = null;
+
+        function generateRadar() {
+            const name = document.getElementById('personName').value.trim() || '未命名';
+            const scores = [];
+            for (let i = 1; i <= 8; i++) {
+                scores.push(parseInt(document.getElementById(`score${i}`).value));
+            }
+
+            // Calculate total score
+            const total = scores.reduce((sum, score) => sum + score, 0);
+
+            // Update name display
+            document.getElementById('chartNameDisplay').textContent = name;
+
+            // Show chart, hide placeholder
+            document.getElementById('chartPlaceholder').style.display = 'none';
+            const canvas = document.getElementById('radarChart');
+            canvas.style.display = 'block';
+
+            // Show and update total
+            document.getElementById('chartTotal').style.display = 'flex';
+            document.getElementById('totalValue').textContent = total;
+
+            // Destroy existing chart
+            if (radarChart) {
+                radarChart.destroy();
+            }
+
+            // Create new chart
+            const ctx = canvas.getContext('2d');
+            radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['技术硬能力', '产品&需求', '项目管理', '测试&质量', '沟通&商务', '架构&设计', '心态&素养', 'AI应用'],
+                    datasets: [{
+                        label: name,
+                        data: scores,
+                        backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                        borderColor: 'rgba(99, 102, 241, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(99, 102, 241, 1)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            min: 0,
+                            max: 10,
+                            ticks: {
+                                stepSize: 2,
+                                color: 'rgba(255, 255, 255, 0.5)',
+                                backdropColor: 'transparent',
+                                font: { size: 11 }
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            angleLines: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            pointLabels: {
+                                color: 'rgba(255, 255, 255, 0.9)',
+                                font: {
+                                    size: 14,
+                                    weight: '600'
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#fff',
+                                font: { size: 14, weight: '600' },
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
